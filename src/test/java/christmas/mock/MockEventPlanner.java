@@ -88,7 +88,7 @@ public class MockEventPlanner {
         List<OrderedMenu> result = new ArrayList<>();
 
         for (String menu : menus.keySet()) {
-            Menu christmasMenu = ChristMasMenu.findMenu(menu)
+            Menu christmasMenu = ChristMasMenu.findMenuByName(menu)
                     .orElseThrow(() -> new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE));
             result.add(OrderedMenu.of(christmasMenu, menus.get(menu)));
         }

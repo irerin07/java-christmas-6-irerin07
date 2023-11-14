@@ -9,8 +9,8 @@ public enum Appetizer implements Menu {
     TAPAS("타파스", 5500),
     CAESAR_SALAD("시저샐러드", 8000);
 
-    private String name;
-    private Integer price;
+    private final String name;
+    private final Integer price;
 
     Appetizer(String name, int price) {
         this.name = name;

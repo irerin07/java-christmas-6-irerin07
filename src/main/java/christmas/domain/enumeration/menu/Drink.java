@@ -9,8 +9,8 @@ public enum Drink implements Menu {
     RED_WINE("레드와인", 60000),
     CHAMPAGNE("샴페인", 25000);
 
-    private String name;
-    private Integer price;
+    private final String name;
+    private final Integer price;
 
     Drink(String name, int price) {
         this.name = name;

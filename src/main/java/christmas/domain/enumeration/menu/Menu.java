@@ -10,6 +10,4 @@ public interface Menu {
 
     String getMenuNameAndAmount(int amount);
 
-
-
 }

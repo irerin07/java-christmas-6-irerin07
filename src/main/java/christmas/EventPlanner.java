@@ -37,91 +37,125 @@ public class EventPlanner {
     }
 
     public Order takeOrders() {
-        LocalDate localDate = InputValidationHelper.get(() -> getVisitDate(EVENT_MONTH));
+        LocalDate localDate = InputValidationHelper.get(this::getVisitLocalDate);
 
-        List<OrderedMenu> orderedMenus = InputValidationHelper.get(() -> getOrderedMenus());
+        List<OrderedMenu> orderedMenus = InputValidationHelper.get(this::getOrderedMenus);
 
         return Order.ofVisitDate(localDate, orderedMenus);
     }
 
-    private LocalDate getVisitDate(int date) {
-        return validateUserInputDate(inputView.getVisitDate(date));
+    private LocalDate getVisitLocalDate() {
+        String visitDate = inputView.getVisitDate(EventPlanner.EVENT_MONTH);
+
+        return generateVisitDateFromInput(visitDate);
     }
 
     private List<OrderedMenu> getOrderedMenus() {
-        List<String> menu = toMenuList(inputView.getOrderingMenus());
-        validateMenu(menu);
+        List<String> menu = extractMenusFromInput();
 
+        Map<String, Integer> result  = generateMenuQuantities(menu);
+
+        return buildOrderedMenus(result);
+    }
+
+    private List<String> extractMenusFromInput() {
+        List<String> result = toMenuList(inputView.getOrderingMenus());
+        validateMenu(result);
+
+        return result;
+    }
+
+    private Map<String, Integer> generateMenuQuantities(List<String> menu) {
         Map<String, Integer> result = toMap(menu);
         validateMenu(result);
 
+        return result;
+    }
+
+    private List<OrderedMenu> buildOrderedMenus(Map<String, Integer> result) {
         List<OrderedMenu> orderedMenus = separateMenus(result);
         validateOnlyDrinkOrdered(orderedMenus);
 
         return orderedMenus;
     }
 
-    private LocalDate validateUserInputDate(String date) {
-        return validateDate(validateNumberInput(date));
+    private LocalDate generateVisitDateFromInput(String date) {
+        int result = validateNumberFormat(date);
+
+        return validateDate(result);
     }
 
     private LocalDate validateDate(int day) {
         try {
-            return LocalDate.of(EVENT_YEAR, EVENT_MONTH, day);
+            return getVisitLocalDate(day);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException(INPUT_DATE_EXCEPTION_MESSAGE);
         }
     }
 
-    private int validateNumberInput(String number) {
+    private LocalDate getVisitLocalDate(int day) {
+        return LocalDate.of(EVENT_YEAR, EVENT_MONTH, day);
+    }
+
+    private int validateNumberFormat(String number) {
         try {
-            return Integer.parseInt(number);
+            return convertStringToInt(number);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(INPUT_DATE_EXCEPTION_MESSAGE);
         }
     }
 
+    private int convertStringToInt(String number) {
+        return Integer.parseInt(number);
+    }
+
     private List<String> toMenuList(String menus) {
-        return Arrays.stream(menus.split(DELIMITER)).map(String::trim).toList();
+        return Arrays.stream(menus.split(DELIMITER))
+                .map(String::trim)
+                .toList();
     }
 
     private List<OrderedMenu> separateMenus(Map<String, Integer> menus) {
         List<OrderedMenu> result = new ArrayList<>();
 
         for (String menu : menus.keySet()) {
-            Menu christmasMenu = ChristMasMenu.findMenu(menu)
-                    .orElseThrow(() -> new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE));
-            result.add(OrderedMenu.of(christmasMenu, menus.get(menu)));
+            Menu orderedMenu = findMenu(menu);
+            result.add(OrderedMenu.of(orderedMenu, menus.get(menu)));
         }
 
         return result;
     }
 
+    private Menu findMenu(String menu) {
+        return ChristMasMenu.findMenuByName(menu)
+                .orElseThrow(() -> new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE));
+    }
+
     private void validateMenu(List<String> menus) {
-        validateMenuInput(menus);
-    }
-
-    private void validateMenu(Map<String, Integer> menus) {
-        validateOrderAmount(menus);
-    }
-
-    private void validateOnlyDrinkOrdered(List<OrderedMenu> result) {
-        long nonDrinkCount = result.stream()
-                .filter(e -> !e.isOfType(Drink.class))
-                .count();
-
-        if (nonDrinkCount == 0) {
-            throw new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE);
-        }
-    }
-
-    private void validateMenuInput(List<String> menus) {
         menus.stream()
                 .filter(e -> !e.matches(MENU_REGEX))
                 .findAny()
                 .ifPresent(invalidMenu -> {
                     throw new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE);
                 });
+    }
+
+    private void validateMenu(Map<String, Integer> menus) {
+        if (menus.values().stream().reduce(0, Integer::sum) > MAX_ORDER_AMOUNT) {
+            throw new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private void validateOnlyDrinkOrdered(List<OrderedMenu> result) {
+        if (countNonDrinkMenu(result) == 0) {
+            throw new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private long countNonDrinkMenu(List<OrderedMenu> result) {
+        return result.stream()
+                .filter(e -> !e.isOfType(Drink.class))
+                .count();
     }
 
     private Map<String, Integer> toMap(List<String> strings) {
@@ -133,12 +167,5 @@ public class EventPlanner {
             throw new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE);
         }
     }
-
-    private void validateOrderAmount(Map<String, Integer> menus) {
-        if (menus.values().stream().reduce(0, Integer::sum) > MAX_ORDER_AMOUNT) {
-            throw new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE);
-        }
-    }
-
 
 }

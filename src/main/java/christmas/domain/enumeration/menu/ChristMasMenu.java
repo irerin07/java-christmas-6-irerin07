@@ -40,13 +40,13 @@ public enum ChristMasMenu {
         }
     }
 
-    private List<? extends Menu> items;
+    private final List<? extends Menu> items;
 
     ChristMasMenu(List<? extends Menu> items) {
         this.items = items;
     }
 
-    public static Optional<? extends Menu> findMenu(String userInput) {
+    public static Optional<? extends Menu> findMenuByName(String userInput) {
         return CHRISTMAS_MENU_BY_CATEGORY.values().stream()
                 .flatMap(christMasMenu -> christMasMenu.items.stream())
                 .map(menuItem -> menuItem.findByName(userInput))
