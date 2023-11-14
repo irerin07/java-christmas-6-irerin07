@@ -1,7 +1,5 @@
-package christmas;
+package christmas.mock;
 
-import christmas.domain.InputValidationHelper;
-import christmas.domain.Order;
 import christmas.domain.OrderedMenu;
 import christmas.domain.enumeration.menu.ChristMasMenu;
 import christmas.domain.enumeration.menu.Drink;
@@ -17,13 +15,13 @@ import java.util.stream.Collectors;
 
 /**
  * @author 민경수
- * @description event planner
- * @since 2023.11.11
+ * @description mock event planner
+ * @since 2023.11.14
  **********************************************************************************************************************/
-public class EventPlanner {
+public class MockEventPlanner {
 
-    private static final String INPUT_DATE_EXCEPTION_MESSAGE = "[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.";
-    private static final String INPUT_MENU_EXCEPTION_MESSAGE = "[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.";
+    public static final String INPUT_DATE_EXCEPTION_MESSAGE = "[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.";
+    public static final String INPUT_MENU_EXCEPTION_MESSAGE = "[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.";
     private static final String DELIMITER = ",";
     private static final String MENU_REGEX = "^[가-힣]+-\\d+$";
     private static final Integer EVENT_MONTH = 12;
@@ -32,16 +30,19 @@ public class EventPlanner {
 
     private final InputView inputView;
 
-    public EventPlanner(InputView inputView) {
+    public MockEventPlanner(InputView inputView) {
         this.inputView = inputView;
     }
 
-    public Order takeOrders() {
-        LocalDate localDate = InputValidationHelper.get(() -> getVisitDate(EVENT_MONTH));
+    public String takeWrongOrders() {
+//        InputValidator.getTest(() -> getVisitDate(EVENT_MONTH));
 
-        List<OrderedMenu> orderedMenus = InputValidationHelper.get(() -> getOrderedMenus());
+        return MockInputValidator.getTest(() -> getOrderedMenus());
+    }
 
-        return Order.ofVisitDate(localDate, orderedMenus);
+    public String takeWrongDate() {
+        return MockInputValidator.getTest(() -> getVisitDate(EVENT_MONTH));
+
     }
 
     private LocalDate getVisitDate(int date) {
@@ -139,6 +140,5 @@ public class EventPlanner {
             throw new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE);
         }
     }
-
 
 }

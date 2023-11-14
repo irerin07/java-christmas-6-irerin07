@@ -1,6 +1,7 @@
-package christmas.domain.menu;
+package christmas.domain.enumeration.menu;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public enum Appetizer implements Menu {
 
@@ -17,20 +18,19 @@ public enum Appetizer implements Menu {
     }
 
     @Override
-    public Appetizer findByName(String userInput) {
+    public Optional<Appetizer> findByName(String userInput) {
         return Arrays.stream(Appetizer.values())
                 .filter(appetizer -> appetizer.name.equals(userInput))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     @Override
-    public int calculateTotalPrice(Integer amount) {
+    public int calculateTotalPrice(int amount) {
         return price * amount;
     }
 
     @Override
-    public String getMenuName(int amount) {
+    public String getMenuNameAndAmount(int amount) {
         return name + " " + amount + "개";
     }
 

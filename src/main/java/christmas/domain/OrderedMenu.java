@@ -1,6 +1,6 @@
 package christmas.domain;
 
-import christmas.domain.menu.Menu;
+import christmas.domain.enumeration.menu.Menu;
 
 /**
  * @author 민경수
@@ -22,7 +22,7 @@ public class OrderedMenu {
     }
 
     public String getMenuAndAmount() {
-        return menu.getMenuName(amount);
+        return menu.getMenuNameAndAmount(amount);
     }
 
     public int calculatePrice() {
@@ -36,4 +36,9 @@ public class OrderedMenu {
     public int calculateBenefit() {
         return 2023 * amount;
     }
+
+    public boolean containsMenu(Class<? extends Menu> menuType) {
+        return menuType.isInstance(menu);
+    }
+
 }

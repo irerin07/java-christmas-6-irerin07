@@ -27,7 +27,7 @@ public class EventPlannerPrinter {
         System.out.println(order.getVisitDate() + "에 우테코 식당에서 받을 이벤트 혜택 미리 보기!");
         System.out.println();
 
-        outputView.printEvent(order, saleProfit);
+        outputView.printEventStatistics(order, saleProfit);
     }
 
 }

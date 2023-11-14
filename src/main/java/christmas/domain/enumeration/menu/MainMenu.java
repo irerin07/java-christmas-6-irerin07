@@ -1,6 +1,7 @@
-package christmas.domain.menu;
+package christmas.domain.enumeration.menu;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public enum MainMenu implements Menu {
 
@@ -9,8 +10,8 @@ public enum MainMenu implements Menu {
     SEAFOOD_PASTA("해산물파스타", 35000),
     CHRISTMAS_PASTA("크리스마스파스타", 25000);
 
-    private String name;
-    private Integer price;
+    private final String name;
+    private final Integer price;
 
     MainMenu(String name, int price) {
         this.name = name;
@@ -18,21 +19,20 @@ public enum MainMenu implements Menu {
     }
 
     @Override
-    public MainMenu findByName(String userInput) {
+    public Optional<MainMenu> findByName(String userInput) {
         return Arrays.stream(MainMenu.values())
                 .filter(mainMenu -> mainMenu.name.equals(userInput))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     @Override
-    public String getMenuName(int amount) {
-        return name + " " + amount + "개";
-    }
-
-    @Override
-    public int calculateTotalPrice(Integer amount) {
+    public int calculateTotalPrice(int amount) {
         return price * amount;
+    }
+
+    @Override
+    public String getMenuNameAndAmount(int amount) {
+        return name + " " + amount + "개";
     }
 
 }

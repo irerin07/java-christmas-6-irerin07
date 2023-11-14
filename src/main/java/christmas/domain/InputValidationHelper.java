@@ -13,13 +13,13 @@ public class InputValidationHelper {
     }
 
     public static <T> T get(Supplier<T> supplier) {
-        while (true) {
+        do {
             try {
                 return supplier.get();
             } catch (IllegalArgumentException | IllegalStateException e) {
                 System.out.println(e.getMessage());
             }
-        }
+        } while (true);
     }
 
 }

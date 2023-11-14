@@ -1,6 +1,7 @@
 package christmas.domain;
 
-import christmas.domain.menu.GiftMenu;
+import christmas.domain.enumeration.EventBadge;
+import christmas.domain.enumeration.menu.GiftMenu;
 import java.math.BigDecimal;
 
 /**
@@ -27,56 +28,44 @@ public class SaleProfit {
         this.eventBadge = EventBadge.findByBenefitByPrice(totalProfit().intValue());
     }
 
-    public static SaleProfit ofVisitDate(GiftMenu giftMenu, int weekDay, int weekEnd, int christmasDDayEvent, int specialDay) {
+    public static SaleProfit ofVisitDate(GiftMenu giftMenu, int weekDay, int weekEnd, int christmasDDayEvent,
+                                         int specialDay) {
         return new SaleProfit(giftMenu, weekDay, weekEnd, christmasDDayEvent, specialDay);
     }
 
     public BigDecimal totalProfit() {
-        int benefitAmountWithoutGiftMenu = weekdaySaleAmount + weekendSaleAmount + christmasDDayEventSaleAmount + specialDaySaleAmount;
+        int benefitAmountWithoutGiftMenu =
+                weekdaySaleAmount + weekendSaleAmount + christmasDDayEventSaleAmount + specialDaySaleAmount;
 
         return BigDecimal.valueOf(giftMenu.calculateTotalBenefitProfit(benefitAmountWithoutGiftMenu));
     }
 
-    public void appendBenefits(Order order) {
-        printGiftMenu(order);
-        printBenefits(order);
-        printTotalBenefitAmount();
-        printEstimatedCheckoutPrice(order);
-        printEventBadge();
-    }
-
-    private void printGiftMenu(Order order) {
-        System.out.println("<증정 메뉴>");
-        System.out.println(getGiftMenu(order));
-
-        System.out.println();
-    }
-
-    private void printBenefits(Order order) {
-        System.out.println("<혜택 내역>");
-        StringBuilder stringBuilder = new StringBuilder();
-        System.out.println(appendBenefits(order, stringBuilder));
-
-    }
-
-    private StringBuilder appendBenefits(Order order, StringBuilder stringBuilder) {
+    public String appendBenefits(Order order) {
         if (order.isBenefitReceivable()) {
-            append(stringBuilder, getChristmasSaleProfit(order));
-            append(stringBuilder, getWeekDaySaleProfit(order));
-            append(stringBuilder, getWeekEndSaleProfit(order));
-            append(stringBuilder, getSpecialSaleDayProfit(order));
-            append(stringBuilder, getGiftMenuProfit(order));
-
-            return stringBuilder;
+            return String.format("%s%s%s%s%s",
+                    getChristmasSaleProfit(order),
+                    getWeekDaySaleProfit(order),
+                    getWeekEndSaleProfit(order),
+                    getSpecialSaleDayProfit(order),
+                    getGiftMenuProfit(order)
+            );
         }
 
-        return stringBuilder.append("없음").append(System.lineSeparator());
+        return String.format("%s%s", "없음", System.lineSeparator());
     }
 
-    private void append(StringBuilder stringBuilder, String benefit) {
-        if (benefit != null && !benefit.isEmpty()) {
-            stringBuilder.append(benefit).append(System.lineSeparator());
+    public String printTotalBenefitAmount() {
+        return String.format("%,.0f원%s", totalProfit().negate(), System.lineSeparator());
+    }
+
+    public String printEstimatedCheckoutPrice(Order order) {
+        BigDecimal totalPrice = order.totalPrice();
+
+        if (order.isGiftMenu()) {
+            totalPrice = getGiftMenuIncludedPrice(order.totalPrice());
         }
+
+        return String.format("%,.0f원%s", totalPrice.subtract(totalProfit()), System.lineSeparator());
     }
 
     private String getChristmasSaleProfit(Order order) {
@@ -119,37 +108,12 @@ public class SaleProfit {
         return "";
     }
 
-    private void printTotalBenefitAmount() {
-        System.out.println("<총혜택 금액>");
-        String format = String.format("-%,.0f원", totalProfit());
-        System.out.println(format);
-        System.out.println();
-    }
-
-    private void printEstimatedCheckoutPrice(Order order) {
-        System.out.println("<할인 후 예상 결제 금액>");
-        BigDecimal totalPrice = order.totalPrice();
-
-        if (order.isGiftMenu()) {
-            totalPrice = getGiftMenuIncludedPrice(order.totalPrice());
-        }
-        String format = String.format("%,.0f원", totalPrice.subtract(totalProfit()));
-        System.out.println(format);
-        System.out.println();
-    }
-
-    private void printEventBadge() {
-        System.out.println("<12월 이벤트 배지>");
-        String eventBadge = getEventBadge();
-        System.out.println(eventBadge);
-    }
-
     private boolean christmasPeriodSaleApplied() {
         return christmasDDayEventSaleAmount != 0;
     }
 
     private String getChristmasEventBenefit() {
-        return "크리스마스 디데이 할인: -" + christmasDDayEventSaleAmount;
+        return String.format("크리스마스 디데이 할인: %d%s", (-christmasDDayEventSaleAmount), System.lineSeparator());
     }
 
     private boolean weekdaySaleApplied() {
@@ -157,7 +121,7 @@ public class SaleProfit {
     }
 
     private String getWeekDayBenefit() {
-        return "평일 할인: -" + weekdaySaleAmount;
+        return String.format("평일 할인: %d%s", (-weekdaySaleAmount), System.lineSeparator());
     }
 
     private boolean weekendSaleApplied() {
@@ -165,7 +129,7 @@ public class SaleProfit {
     }
 
     private String getWeekEndBenefit() {
-        return "주말 할인: -" + weekendSaleAmount;
+        return String.format("주말 할인: %d%s", (-weekendSaleAmount), System.lineSeparator());
     }
 
     private boolean specialDaySaleApplied() {
@@ -173,10 +137,10 @@ public class SaleProfit {
     }
 
     private String getSpecialSaleDayBenefit() {
-        return "특별 할인: -" + specialDaySaleAmount;
+        return String.format("특별 할인: %d%s", (-specialDaySaleAmount), System.lineSeparator());
     }
 
-    private String getGiftMenu(Order order) {
+    public String getGiftMenu() {
         if (giftMenu == GiftMenu.NONE) {
             return giftMenu.getName();
         }
@@ -185,15 +149,15 @@ public class SaleProfit {
     }
 
     private String getGiftMenuBenefit() {
-        return "증정 이벤트: -" + giftMenu.price();
+        return String.format("증정 이벤트: %d%s", (-giftMenu.price()), System.lineSeparator());
     }
 
     private BigDecimal getGiftMenuIncludedPrice(BigDecimal totalPrice) {
         return totalPrice.add(BigDecimal.valueOf(giftMenu.price()));
     }
 
-    private String getEventBadge() {
-        return eventBadge.getName();
+    public String getEventBadge() {
+        return String.format("%s", eventBadge.getName());
     }
 
 }

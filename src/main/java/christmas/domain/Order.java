@@ -1,11 +1,11 @@
 package christmas.domain;
 
-import christmas.domain.menu.Dessert;
-import christmas.domain.menu.MainMenu;
+import christmas.domain.enumeration.SpecialEventSale;
+import christmas.domain.enumeration.menu.Dessert;
+import christmas.domain.enumeration.menu.MainMenu;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -16,20 +16,18 @@ import java.util.List;
  **********************************************************************************************************************/
 public class Order {
 
-    private final LocalDateTime receivedTime;
     private final LocalDate visitDate;
     private final List<OrderedMenu> orderedMenus;
 
-    private Order(LocalDateTime receivedTime, LocalDate visitDate, List<OrderedMenu> orderedMenus) {
-        this.receivedTime = receivedTime;
-
+    private Order(LocalDate visitDate, List<OrderedMenu> orderedMenus) {
         validateVisitDate(visitDate);
         this.visitDate = visitDate;
-        this.orderedMenus = orderedMenus;
+
+        this.orderedMenus = List.copyOf(orderedMenus);
     }
 
-    public static Order ofVisitDate(LocalDateTime receivedTime, LocalDate visitDate, List<OrderedMenu> orderedMenus) {
-        return new Order(receivedTime, visitDate, orderedMenus);
+    public static Order ofVisitDate(LocalDate visitDate, List<OrderedMenu> orderedMenus) {
+        return new Order(visitDate, orderedMenus);
     }
 
     public String printOrderedMenus() {
@@ -52,7 +50,8 @@ public class Order {
     }
 
     public boolean isBenefitReceivable() {
-        return isWeekDay() || isWeekend() || isSpecialSaleDay() || isGiftMenu() || isChristmasSalePeriod();
+        return isWeekDayBenefitReceivavle() || isWeekEndBenefitReceivavle() || isSpecialSaleDay() || isGiftMenu()
+                || isChristmasSalePeriod();
     }
 
     public String getVisitDate() {
@@ -75,16 +74,13 @@ public class Order {
         return !visitDate.isBefore(LocalDate.of(2023, 12, 1)) && !visitDate.isAfter(LocalDate.of(2023, 12, 25));
     }
 
-    private void validateVisitDate(LocalDate visitDate) {
-        if (LocalDate.now().isAfter(visitDate)) {
-            throw new IllegalArgumentException("[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.");
-        }
-    }
-
     public int calculateChristmasEventBenefit() {
-        long between = ChronoUnit.DAYS.between(LocalDate.of(2023, 12, 1), visitDate);
+        if (isChristmasSalePeriod()) {
+            long between = ChronoUnit.DAYS.between(LocalDate.of(2023, 12, 1), visitDate);
+            return (int) (1000 + (between * 100));
+        }
 
-        return (int) (1000 + (between * 100));
+        return 0;
     }
 
     public boolean isWeekend() {
@@ -103,18 +99,36 @@ public class Order {
     }
 
     public int calculateWeekEndBenefit() {
-        int weekDayBenefit = 0;
+        int weekEndBenefit = 0;
         for (OrderedMenu orderedMenu : orderedMenus) {
             if (orderedMenu.isOfType(MainMenu.class)) {
-                weekDayBenefit += orderedMenu.calculateBenefit();
+                weekEndBenefit += orderedMenu.calculateBenefit();
             }
         }
 
-        return weekDayBenefit;
+        return weekEndBenefit;
     }
 
     public int calculateSpecialDayBenefit() {
         return SpecialEventSale.getSaleAmount(visitDate.getDayOfMonth());
+    }
+
+    public String printTotalOrderedPrice() {
+        return String.format("%,.0f원%s", totalPrice(), System.lineSeparator());
+    }
+
+    private void validateVisitDate(LocalDate visitDate) {
+        if (LocalDate.now().isAfter(visitDate)) {
+            throw new IllegalArgumentException("[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.");
+        }
+    }
+
+    private boolean isWeekDayBenefitReceivavle() {
+        return isWeekDay() && orderedMenus.stream().anyMatch(e -> e.containsMenu(Dessert.class));
+    }
+
+    private boolean isWeekEndBenefitReceivavle() {
+        return isWeekDay() && orderedMenus.stream().anyMatch(e -> e.containsMenu(MainMenu.class));
     }
 
 }

@@ -2,7 +2,6 @@ package christmas.view;
 
 import christmas.domain.Order;
 import christmas.domain.SaleProfit;
-import java.math.BigDecimal;
 
 /**
  * @author 민경수
@@ -11,27 +10,27 @@ import java.math.BigDecimal;
  **********************************************************************************************************************/
 public class OutputView {
 
-    public void printEvent(Order order, SaleProfit saleProfit) {
-        printOrderedMenus(order);
-        printTotalOrderedPrice(order);
+    public void printEventStatistics(Order order, SaleProfit saleProfit) {
+        StringBuilder stringBuilder = new StringBuilder();
 
-        saleProfit.appendBenefits(order);
+        appendSection(stringBuilder, "주문 메뉴", order.printOrderedMenus());
+        appendSection(stringBuilder, "할인 전 총주문 금액", order.printTotalOrderedPrice());
+        appendSection(stringBuilder, "증정 메뉴", saleProfit.getGiftMenu());
+        appendSection(stringBuilder, "혜택 내역", saleProfit.appendBenefits(order));
+        appendSection(stringBuilder, "총혜택 금액", saleProfit.printTotalBenefitAmount());
+        appendSection(stringBuilder, "할인 후 예상 결제 금액", saleProfit.printEstimatedCheckoutPrice(order));
+        appendSection(stringBuilder, "12월 이벤트 배지", saleProfit.getEventBadge());
+
+        System.out.println(stringBuilder);
     }
 
-    private void printOrderedMenus(Order order) {
-        printTitle("<주문 메뉴>");
-        System.out.println(order.printOrderedMenus());
+    private void appendSection(StringBuilder stringBuilder, String title, String content) {
+        stringBuilder.append(printTitle(title)).append(System.lineSeparator());
+        stringBuilder.append(content).append(System.lineSeparator());
     }
 
-    private void printTotalOrderedPrice(Order order) {
-        printTitle("<할인 전 총주문 금액>");
-        String format = String.format("%,.0f원", order.totalPrice());
-        System.out.println(format);
-        System.out.println();
-    }
-
-    private void printTitle(String title) {
-        System.out.println(title);
+    private String printTitle(String title) {
+        return "<" + title + ">";
     }
 
 }

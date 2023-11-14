@@ -7,10 +7,10 @@ import camp.nextstep.edu.missionutils.Console;
  * @description input view
  * @since 2023.11.10
  **********************************************************************************************************************/
-public class InputVIew {
+public class InputView {
 
-    public String getVisitDate(int date) {
-        System.out.println(date + "월 중 식당 예상 방문 날짜는 언제인가요? (숫자만 입력해 주세요!)");
+    public String getVisitDate(int month) {
+        System.out.println(month + "월 중 식당 예상 방문 날짜는 언제인가요? (숫자만 입력해 주세요!)");
 
         return (Console.readLine());
     }

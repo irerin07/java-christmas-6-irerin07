@@ -1,21 +1,21 @@
 package christmas.domain;
 
-import christmas.domain.menu.GiftMenu;
+import christmas.domain.enumeration.menu.GiftMenu;
 
 /**
  * @author 민경수
  * @description sale benefit calculator
  * @since 2023.11.11
  **********************************************************************************************************************/
-public class SaleBenefitCalculator {
+public class SaleBenefitGenerator {
 
     public SaleProfit getBenefits(Order order) {
         return SaleProfit.ofVisitDate(
                 giftMenu(order),
-                weekDay(order),
-                weekEnd(order),
-                order.calculateChristmasEventBenefit(),
-                specialDay(order)
+                weekDaySale(order),
+                weekEndSale(order),
+                christmasEventSale(order),
+                specialDaySale(order)
         );
     }
 
@@ -23,7 +23,7 @@ public class SaleBenefitCalculator {
         return GiftMenu.findByOrderPrice(order.totalPrice().intValue());
     }
 
-    private int weekDay(Order order) {
+    private int weekDaySale(Order order) {
         if (order.isWeekDay()) {
             return order.calculateWeekDayBenefit();
         }
@@ -31,7 +31,7 @@ public class SaleBenefitCalculator {
         return 0;
     }
 
-    private int weekEnd(Order order) {
+    private int weekEndSale(Order order) {
         if (order.isWeekend()) {
             return order.calculateWeekEndBenefit();
         }
@@ -39,7 +39,15 @@ public class SaleBenefitCalculator {
         return 0;
     }
 
-    private int specialDay(Order order) {
+    private int christmasEventSale(Order order) {
+        if (order.isChristmasSalePeriod()) {
+            return order.calculateChristmasEventBenefit();
+        }
+
+        return 0;
+    }
+
+    private int specialDaySale(Order order) {
         if (order.isSpecialSaleDay()) {
             return order.calculateSpecialDayBenefit();
         }

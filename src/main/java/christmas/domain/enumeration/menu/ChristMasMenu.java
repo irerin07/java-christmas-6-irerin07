@@ -1,11 +1,11 @@
-package christmas.domain.menu;
+package christmas.domain.enumeration.menu;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 
 public enum ChristMasMenu {
 
@@ -46,13 +46,13 @@ public enum ChristMasMenu {
         this.items = items;
     }
 
-    public static Menu findMenu(String userInput) {
+    public static Optional<? extends Menu> findMenu(String userInput) {
         return CHRISTMAS_MENU_BY_CATEGORY.values().stream()
                 .flatMap(christMasMenu -> christMasMenu.items.stream())
                 .map(menuItem -> menuItem.findByName(userInput))
-                .filter(Objects::nonNull)
+                .filter(Optional::isPresent)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요."));
+                .orElse(Optional.empty());
     }
 
 }

@@ -1,14 +1,13 @@
-package christmas.domain;
+package christmas.domain.enumeration;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public enum SpecialEventSale {
 
-    NONE(Collections.EMPTY_LIST, 0),
-    STARRED_DATE(Arrays.asList(3, 10, 17, 24, 25, 31), 1000);
+    NONE(Collections.emptyList(), 0),
+    STARRED_DATE(List.of(3, 10, 17, 24, 25, 31), 1000);
 
     private final List<Integer> dates;
     private final Integer saleAmount;

@@ -1,4 +1,4 @@
-package christmas.domain.menu;
+package christmas.domain.enumeration.menu;
 
 import java.util.Arrays;
 
@@ -35,10 +35,10 @@ public enum GiftMenu {
     }
 
     public String getGiftMenu() {
-        return String.format("%s %d개", name, 1);
+        return String.format("%s %d개%s", name, 1, System.lineSeparator());
     }
 
     public String getName() {
-        return name;
+        return String.format("%s%s", name, System.lineSeparator());
     }
 }
