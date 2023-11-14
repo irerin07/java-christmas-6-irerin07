@@ -6,11 +6,4 @@ import org.junit.jupiter.api.Test;
 
 class OrderedMenuTest {
 
-    @Test
-    void testIsOfType() {
-    }
-
-    @Test
-    void containsMenu() {
-    }
 }

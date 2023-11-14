@@ -35,8 +35,6 @@ public class MockEventPlanner {
     }
 
     public String takeWrongOrders() {
-//        InputValidator.getTest(() -> getVisitDate(EVENT_MONTH));
-
         return MockInputValidator.getTest(() -> getOrderedMenus());
     }
 

@@ -6,7 +6,4 @@ import org.junit.jupiter.api.Test;
 
 class SaleBenefitGeneratorTest {
 
-    @Test
-    void getBenefits() {
-    }
 }

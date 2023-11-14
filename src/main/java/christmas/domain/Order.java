@@ -50,7 +50,7 @@ public class Order {
     }
 
     public boolean isBenefitReceivable() {
-        return isWeekDayBenefitReceivavle() || isWeekEndBenefitReceivavle() || isSpecialSaleDay() || isGiftMenu()
+        return isWeekDayBenefitReceivable() || isWeekEndBenefitReceivable() || isSpecialSaleDay() || isGiftMenu()
                 || isChristmasSalePeriod();
     }
 
@@ -123,11 +123,11 @@ public class Order {
         }
     }
 
-    private boolean isWeekDayBenefitReceivavle() {
+    private boolean isWeekDayBenefitReceivable() {
         return isWeekDay() && orderedMenus.stream().anyMatch(e -> e.containsMenu(Dessert.class));
     }
 
-    private boolean isWeekEndBenefitReceivavle() {
+    private boolean isWeekEndBenefitReceivable() {
         return isWeekDay() && orderedMenus.stream().anyMatch(e -> e.containsMenu(MainMenu.class));
     }
 

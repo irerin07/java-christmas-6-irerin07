@@ -6,11 +6,4 @@ import org.junit.jupiter.api.Test;
 
 class SaleProfitTest {
 
-    @Test
-    void ofVisitDate() {
-    }
-
-    @Test
-    void totalProfit() {
-    }
 }
