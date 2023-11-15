@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 class OrderTest {
 
     private List<OrderedMenuItem> orderedMenuItems;
-    private OrderedMenus orderedMenusInstance;
     private Order order;
 
     @BeforeEach
@@ -38,14 +37,13 @@ class OrderTest {
         map.put("시저샐러드", 1);
         map.put("레드와인", 1);
 
-        orderedMenusInstance = OrderedMenus.of(map);
+        OrderedMenus orderedMenusInstance = OrderedMenus.of(map);
         order = Order.ofVisitDate(LocalDate.of(2023, 12, 4), orderedMenusInstance);
     }
 
     @Test
     void printOrderedMenus() {
-        String s = order.printOrderedMenus();
-        assertThat(s).contains(
+        assertThat(order.printOrderedMenus()).contains(
                 "아이스크림 2개",
                 "티본스테이크 1개",
                 "바비큐립 1개",

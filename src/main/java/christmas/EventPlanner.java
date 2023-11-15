@@ -20,6 +20,10 @@ public class EventPlanner {
 
     public static final String INPUT_DATE_EXCEPTION_MESSAGE = "[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.";
     public static final String INPUT_MENU_EXCEPTION_MESSAGE = "[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.";
+    public static final LocalDate CHRISTMAS_EVENT_START = LocalDate.of(2023, 12, 1);
+    public static final LocalDate CHRISTMAS_EVENT_END = LocalDate.of(2023, 12, 25);
+    public static final Integer BASE_CHRISTMAS_SALE_AMOUNT = 1000;
+    public static final Integer CHRISTMAS_SALE_UNIT = 100;
     private static final String DELIMITER = ",";
     private static final String MENU_REGEX = "^[가-힣]+-\\d+$";
     private static final Integer EVENT_MONTH = 12;

@@ -41,4 +41,9 @@ public enum GiftMenu {
     public String getName() {
         return String.format("%s%s", name, System.lineSeparator());
     }
+
+    public static boolean isGiftMenu(int totalPrice) {
+        return findByOrderPrice(totalPrice) != NONE;
+    }
+
 }

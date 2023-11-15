@@ -1,7 +1,9 @@
 package christmas.domain;
 
+import christmas.EventPlanner;
 import christmas.domain.enumeration.SpecialEventSale;
 import christmas.domain.enumeration.menu.Dessert;
+import christmas.domain.enumeration.menu.GiftMenu;
 import christmas.domain.enumeration.menu.MainMenu;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -31,10 +33,7 @@ public class Order {
     }
 
     public String printOrderedMenus() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(orderedMenus.printMenus());
-
-        return sb.toString();
+        return orderedMenus.printMenus();
     }
 
     public BigDecimal totalPrice() {
@@ -63,17 +62,18 @@ public class Order {
     }
 
     public boolean isGiftMenu() {
-        return totalPrice().compareTo(BigDecimal.valueOf(120000)) != -1;
+        return GiftMenu.isGiftMenu(totalPrice().intValue());
     }
 
     public boolean isChristmasSalePeriod() {
-        return !visitDate.isBefore(LocalDate.of(2023, 12, 1)) && !visitDate.isAfter(LocalDate.of(2023, 12, 25));
+        return !visitDate.isBefore(EventPlanner.CHRISTMAS_EVENT_START) && !visitDate.isAfter(
+                EventPlanner.CHRISTMAS_EVENT_END);
     }
 
     public int calculateChristmasEventBenefit() {
         if (isChristmasSalePeriod()) {
-            long between = ChronoUnit.DAYS.between(LocalDate.of(2023, 12, 1), visitDate);
-            return (int) (1000 + (between * 100));
+            long between = ChronoUnit.DAYS.between(EventPlanner.CHRISTMAS_EVENT_START, visitDate);
+            return (int) (EventPlanner.BASE_CHRISTMAS_SALE_AMOUNT + (between * EventPlanner.CHRISTMAS_SALE_UNIT));
         }
 
         return 0;
