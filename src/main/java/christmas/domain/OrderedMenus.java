@@ -22,10 +22,9 @@ public class OrderedMenus {
     private final List<OrderedMenuItem> orderedMenuItems;
 
     private OrderedMenus(Map<String, Integer> orderedMenus) {
-        validateMenu(orderedMenus);
-        List<OrderedMenuItem> orderedMenus1Item = buildOrderedMenus(orderedMenus);
+        validateTotalMenuOrdered(orderedMenus);
 
-        this.orderedMenuItems = orderedMenus1Item;
+        this.orderedMenuItems = buildOrderedMenuItems(orderedMenus);
     }
 
     public static OrderedMenus of(Map<String, Integer> orderedMenus) {
@@ -56,10 +55,11 @@ public class OrderedMenus {
     }
 
     public boolean containsMenuType(Class<? extends Menu> menuType) {
-        return orderedMenuItems.stream().anyMatch(e -> e.containsMenu(menuType));
+        return orderedMenuItems.stream()
+                .anyMatch(e -> e.containsMenu(menuType));
     }
 
-    private List<OrderedMenuItem> buildOrderedMenus(Map<String, Integer> result) {
+    private List<OrderedMenuItem> buildOrderedMenuItems(Map<String, Integer> result) {
         List<OrderedMenuItem> orderedMenuItems = separateMenus(result);
         validateOnlyDrinkOrdered(orderedMenuItems);
 
@@ -89,10 +89,14 @@ public class OrderedMenus {
                 .count();
     }
 
-    private void validateMenu(Map<String, Integer> menus) {
-        if (menus.values().stream().reduce(0, Integer::sum) > MAX_ORDER_AMOUNT) {
+    private void validateTotalMenuOrdered(Map<String, Integer> menus) {
+        if (countAllMenuAmount(menus) > MAX_ORDER_AMOUNT) {
             throw new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE);
         }
+    }
+
+    private int countAllMenuAmount(Map<String, Integer> menus) {
+        return menus.values().stream().reduce(0, Integer::sum);
     }
 
 }
