@@ -13,6 +13,7 @@ import christmas.mock.MockDrinkOnlyMenuInput;
 import christmas.mock.MockDuplicateMenuInput;
 import christmas.mock.MockEventPlanner;
 import christmas.mock.MockInvalidMenuInput;
+import christmas.mock.MockOrderPriceLessInput;
 import christmas.mock.MockWrongDateInput;
 import christmas.view.InputView;
 import org.junit.jupiter.api.DisplayName;
@@ -90,6 +91,17 @@ class EventPlannerTest {
         String errorMessage = eventPlanner.takeWrongDate();
 
         assertThat(errorMessage).contains("[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.");
+    }
+
+    @DisplayName("최소 주문금액을 맞추지 못한 경우 예외처리")
+    @Test
+    void takeOrders_less_than_minimum_order_price() {
+        InputView inputView = new MockOrderPriceLessInput();
+        MockEventPlanner eventPlanner = new MockEventPlanner(inputView);
+
+        String errorMessage = eventPlanner.takeWrongDate();
+
+        assertThat(errorMessage).contains("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
     }
 
 }

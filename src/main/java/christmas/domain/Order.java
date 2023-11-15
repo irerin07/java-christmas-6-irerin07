@@ -50,7 +50,7 @@ public class Order {
     }
 
     private boolean isOverMinimumOrderPrice() {
-        return totalPrice().compareTo(BigDecimal.valueOf(10000)) > -1;
+        return totalPrice().compareTo(BigDecimal.valueOf(EventPlanner.MINIMUM_ORDER_PRICE_FOR_BENEFIT)) > -1;
     }
 
     public String getVisitDate() {

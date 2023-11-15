@@ -2,6 +2,7 @@ package christmas.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import christmas.domain.enumeration.menu.Appetizer;
@@ -66,6 +67,21 @@ class OrderTest {
     @Test
     void isBenefitReceivable() {
         assertTrue(order.isBenefitReceivable());
+    }
+
+    @DisplayName("최소 주문 금액을 맞추지 못한 경우, 혜택을 받을 수 없다.")
+    @Test
+    void minimum_order_price_not_met() {
+        orderedMenuItems = new ArrayList<>();
+        orderedMenuItems.add(OrderedMenuItem.of(Appetizer.TAPAS, 1));
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("타파스", 1);
+
+        OrderedMenus orderedMenusInstance = OrderedMenus.of(map);
+        order = Order.ofVisitDate(LocalDate.of(2023, 12, 4), orderedMenusInstance);
+
+        assertFalse(order.isBenefitReceivable());
     }
 
 }
