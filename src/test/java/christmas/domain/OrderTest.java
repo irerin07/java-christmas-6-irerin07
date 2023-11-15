@@ -1,7 +1,8 @@
 package christmas.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import christmas.domain.enumeration.menu.Appetizer;
 import christmas.domain.enumeration.menu.Dessert;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class OrderTest {
@@ -41,6 +43,7 @@ class OrderTest {
         order = Order.ofVisitDate(LocalDate.of(2023, 12, 4), orderedMenusInstance);
     }
 
+    @DisplayName("주문한 메뉴들과 그 수량을 출력한다.")
     @Test
     void printOrderedMenus() {
         assertThat(order.printOrderedMenus()).contains(
@@ -52,6 +55,7 @@ class OrderTest {
         );
     }
 
+    @DisplayName("총주문 금액을 계산한다.")
     @Test
     void totalPrice() {
         BigDecimal bigDecimal = order.totalPrice();

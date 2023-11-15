@@ -4,19 +4,18 @@ import christmas.view.InputView;
 
 /**
  * @author 민경수
- * @description mock invalid menu input
- * @since 2023.11.15
+ * @description mock invalid input
+ * @since 2023.11.14
  **********************************************************************************************************************/
-public class MockInvalidMenuInput  extends InputView {
+public class MockDrinkOnlyMenuInput extends InputView {
 
     @Override
     public String getOrderingMenus() {
-        return "비빔밥-1,레드와인-2";
+        return "제로콜라-1,레드와인-2";
     }
 
     @Override
     public String getVisitDate(int month) {
-        return "12";
+        return "64";
     }
-
 }

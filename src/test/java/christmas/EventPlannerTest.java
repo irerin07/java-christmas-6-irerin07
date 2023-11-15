@@ -1,14 +1,19 @@
 package christmas;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import christmas.domain.Order;
+import christmas.mock.MockDrinkOnlyMenuInput;
+import christmas.mock.MockDuplicateMenuInput;
 import christmas.mock.MockEventPlanner;
 import christmas.mock.MockInvalidMenuInput;
-
+import christmas.mock.MockWrongDateInput;
 import christmas.view.InputView;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,10 +44,36 @@ class EventPlannerTest {
         );
     }
 
+    @DisplayName("메뉴에 없는 주문이 포함되어 들어온 경우")
+    @Test
+    void takeOrders_InValidInput_ReturnsOrder() {
+        InputView inputView = new MockInvalidMenuInput();
+        MockEventPlanner eventPlanner = new MockEventPlanner(inputView);
+
+        String errorMessage = eventPlanner.takeWrongOrders();
+
+        assertThat(errorMessage).contains("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+
+
+    }
+
+    @DisplayName("중복된 메뉴가 포함되어 들어온 경우")
+    @Test
+    void takeOrders_DuplicateMenus_ReturnsOrder() {
+        InputView inputView = new MockDuplicateMenuInput();
+        MockEventPlanner eventPlanner = new MockEventPlanner(inputView);
+
+        String errorMessage = eventPlanner.takeWrongOrders();
+
+        assertThat(errorMessage).contains("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+
+
+    }
+
     @DisplayName("음료만으로 구성된 메뉴 주문시 예외 처리")
     @Test
     void takeOrders_Drinks_Only() {
-        InputView inputView = new MockInvalidMenuInput();
+        InputView inputView = new MockDrinkOnlyMenuInput();
         MockEventPlanner eventPlanner = new MockEventPlanner(inputView);
 
         String errorMessage = eventPlanner.takeWrongOrders();
@@ -53,7 +84,7 @@ class EventPlannerTest {
     @DisplayName("잘못된 날짜")
     @Test
     void takeOrders_Wrong_Date() {
-        InputView inputView = new MockInvalidMenuInput();
+        InputView inputView = new MockWrongDateInput();
         MockEventPlanner eventPlanner = new MockEventPlanner(inputView);
 
         String errorMessage = eventPlanner.takeWrongDate();
