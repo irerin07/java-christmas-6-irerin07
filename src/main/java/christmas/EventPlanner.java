@@ -65,7 +65,7 @@ public class EventPlanner {
 
     private Map<String, Integer> generateMenuQuantities(List<String> menu) {
 
-        return toMap(menu);
+        return separateMenuAndAmount(menu);
     }
 
     private LocalDate generateVisitDateFromInput(String date) {
@@ -113,7 +113,7 @@ public class EventPlanner {
                 });
     }
 
-    private Map<String, Integer> toMap(List<String> strings) {
+    private Map<String, Integer> separateMenuAndAmount(List<String> strings) {
         try {
             return strings.stream()
                     .map(element -> element.split("-"))
