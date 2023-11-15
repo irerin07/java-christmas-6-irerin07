@@ -45,8 +45,12 @@ public class Order {
     }
 
     public boolean isBenefitReceivable() {
-        return isWeekDayBenefitReceivable() || isWeekEndBenefitReceivable() || isSpecialSaleDay() || isGiftMenu()
-                || isChristmasSalePeriod();
+        return isOverMinimumOrderPrice() && (isWeekDayBenefitReceivable() || isWeekEndBenefitReceivable() || isSpecialSaleDay() || isGiftMenu()
+                || isChristmasSalePeriod());
+    }
+
+    private boolean isOverMinimumOrderPrice() {
+        return totalPrice().compareTo(BigDecimal.valueOf(10000)) > -1;
     }
 
     public String getVisitDate() {

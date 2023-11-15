@@ -36,7 +36,7 @@ public class OutputView {
     private void printBenefitsRelatedInformation(StringBuilder stringBuilder, Order order, SaleProfit saleProfit) {
         appendSection(stringBuilder, "증정 메뉴", saleProfit.getGiftMenu());
         appendSection(stringBuilder, "혜택 내역", saleProfit.appendBenefits(order));
-        appendSection(stringBuilder, "총혜택 금액", saleProfit.printTotalBenefitAmount());
+        appendSection(stringBuilder, "총혜택 금액", saleProfit.printTotalBenefitAmount(order));
         appendSection(stringBuilder, "할인 후 예상 결제 금액", saleProfit.printEstimatedCheckoutPrice(order));
         appendSection(stringBuilder, "12월 이벤트 배지", saleProfit.getEventBadge());
     }

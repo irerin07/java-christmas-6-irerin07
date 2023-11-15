@@ -54,18 +54,23 @@ public class SaleProfit {
         return String.format("%s%s", "없음", System.lineSeparator());
     }
 
-    public String printTotalBenefitAmount() {
-        return String.format("%,.0f원%s", totalProfit().negate(), System.lineSeparator());
+    public String printTotalBenefitAmount(Order order) {
+        if (order.isBenefitReceivable()) {
+            return String.format("%,.0f원%s", totalProfit().negate(), System.lineSeparator());
+        }
+
+        return String.format("%d원%s", 0, System.lineSeparator());
     }
 
     public String printEstimatedCheckoutPrice(Order order) {
         BigDecimal totalPrice = order.totalPrice();
 
-        if (order.isGiftMenu()) {
+        if (order.isGiftMenu() && order.isBenefitReceivable()) {
             totalPrice = getGiftMenuIncludedPrice(order.totalPrice());
+            return String.format("%,.0f원%s", totalPrice.subtract(totalProfit()), System.lineSeparator());
         }
 
-        return String.format("%,.0f원%s", totalPrice.subtract(totalProfit()), System.lineSeparator());
+        return String.format("%,.0f원%s", totalPrice, System.lineSeparator());
     }
 
     private String getChristmasSaleProfit(Order order) {

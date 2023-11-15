@@ -56,7 +56,7 @@ class SaleBenefitGeneratorTest {
                 , "증정 이벤트: -25000"
         );
 
-        assertThat(benefits.printTotalBenefitAmount()).contains(
+        assertThat(benefits.printTotalBenefitAmount(order)).contains(
                 "-30,346원"
         );
 
