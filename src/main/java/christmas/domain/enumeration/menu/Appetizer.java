@@ -31,7 +31,7 @@ public enum Appetizer implements Menu {
 
     @Override
     public String getMenuNameAndAmount(int amount) {
-        return name + " " + amount + "개";
+        return String.format("%s %d개%s", name, amount, System.lineSeparator());
     }
 
 }

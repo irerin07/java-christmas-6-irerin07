@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 /**
  * @author 민경수
@@ -17,24 +16,23 @@ import java.util.List;
 public class Order {
 
     private final LocalDate visitDate;
-    private final List<OrderedMenu> orderedMenus;
+    private final OrderedMenus orderedMenus;
 
-    private Order(LocalDate visitDate, List<OrderedMenu> orderedMenus) {
+    private Order(LocalDate visitDate, OrderedMenus orderedMenus) {
         validateVisitDate(visitDate);
         this.visitDate = visitDate;
 
-        this.orderedMenus = List.copyOf(orderedMenus);
+        this.orderedMenus = orderedMenus;
     }
 
-    public static Order ofVisitDate(LocalDate visitDate, List<OrderedMenu> orderedMenus) {
+
+    public static Order ofVisitDate(LocalDate visitDate, OrderedMenus orderedMenus) {
         return new Order(visitDate, orderedMenus);
     }
 
     public String printOrderedMenus() {
         StringBuffer sb = new StringBuffer();
-        for (OrderedMenu orderedMenu : orderedMenus) {
-            sb.append(orderedMenu.getMenuAndAmount()).append(System.lineSeparator());
-        }
+        sb.append(orderedMenus.printMenus());
 
         return sb.toString();
     }
@@ -42,9 +40,7 @@ public class Order {
     public BigDecimal totalPrice() {
         BigDecimal result = BigDecimal.ZERO;
 
-        for (OrderedMenu orderedMenu : orderedMenus) {
-            result = result.add(BigDecimal.valueOf(orderedMenu.calculatePrice()));
-        }
+        result = result.add(orderedMenus.totalPrice());
 
         return result;
     }
@@ -89,22 +85,16 @@ public class Order {
 
     public int calculateWeekDayBenefit() {
         int weekDayBenefit = 0;
-        for (OrderedMenu orderedMenu : orderedMenus) {
-            if (orderedMenu.isOfType(Dessert.class)) {
-                weekDayBenefit += orderedMenu.calculateBenefit();
-            }
-        }
+
+        weekDayBenefit += orderedMenus.matchMenuType(Dessert.class);
 
         return weekDayBenefit;
     }
 
     public int calculateWeekEndBenefit() {
         int weekEndBenefit = 0;
-        for (OrderedMenu orderedMenu : orderedMenus) {
-            if (orderedMenu.isOfType(MainMenu.class)) {
-                weekEndBenefit += orderedMenu.calculateBenefit();
-            }
-        }
+
+        weekEndBenefit += orderedMenus.matchMenuType(MainMenu.class);
 
         return weekEndBenefit;
     }
@@ -124,11 +114,11 @@ public class Order {
     }
 
     private boolean isWeekDayBenefitReceivable() {
-        return isWeekDay() && orderedMenus.stream().anyMatch(e -> e.containsMenu(Dessert.class));
+        return isWeekDay() && orderedMenus.containsMenuType(Dessert.class);
     }
 
     private boolean isWeekEndBenefitReceivable() {
-        return isWeekDay() && orderedMenus.stream().anyMatch(e -> e.containsMenu(MainMenu.class));
+        return isWeekDay() && orderedMenus.containsMenuType(MainMenu.class);
     }
 
 }
