@@ -7,18 +7,18 @@ import christmas.domain.enumeration.menu.Menu;
  * @description ordered menu
  * @since 2023.11.11
  **********************************************************************************************************************/
-public class OrderedMenu {
+public class OrderedMenuItem {
 
     private final Menu menu;
     private final Integer amount;
 
-    private OrderedMenu(Menu menu, Integer amount) {
+    private OrderedMenuItem(Menu menu, Integer amount) {
         this.menu = menu;
         this.amount = amount;
     }
 
-    public static OrderedMenu of(Menu menu, int amount) {
-        return new OrderedMenu(menu, amount);
+    public static OrderedMenuItem of(Menu menu, int amount) {
+        return new OrderedMenuItem(menu, amount);
     }
 
     public String getMenuAndAmount() {

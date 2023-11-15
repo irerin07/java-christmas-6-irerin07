@@ -1,6 +1,6 @@
 package christmas.mock;
 
-import christmas.domain.OrderedMenu;
+import christmas.domain.OrderedMenuItem;
 import christmas.domain.enumeration.menu.ChristMasMenu;
 import christmas.domain.enumeration.menu.Drink;
 import christmas.domain.enumeration.menu.Menu;
@@ -47,17 +47,17 @@ public class MockEventPlanner {
         return validateUserInputDate(inputView.getVisitDate(date));
     }
 
-    private List<OrderedMenu> getOrderedMenus() {
+    private List<OrderedMenuItem> getOrderedMenus() {
         List<String> menu = toMenuList(inputView.getOrderingMenus());
         validateMenu(menu);
 
         Map<String, Integer> result = toMap(menu);
         validateMenu(result);
 
-        List<OrderedMenu> orderedMenus = separateMenus(result);
-        validateOnlyDrinkOrdered(orderedMenus);
+        List<OrderedMenuItem> orderedMenuItems = separateMenus(result);
+        validateOnlyDrinkOrdered(orderedMenuItems);
 
-        return orderedMenus;
+        return orderedMenuItems;
     }
 
     private LocalDate validateUserInputDate(String date) {
@@ -84,13 +84,13 @@ public class MockEventPlanner {
         return Arrays.stream(menus.split(DELIMITER)).map(String::trim).toList();
     }
 
-    private List<OrderedMenu> separateMenus(Map<String, Integer> menus) {
-        List<OrderedMenu> result = new ArrayList<>();
+    private List<OrderedMenuItem> separateMenus(Map<String, Integer> menus) {
+        List<OrderedMenuItem> result = new ArrayList<>();
 
         for (String menu : menus.keySet()) {
             Menu christmasMenu = ChristMasMenu.findMenuByName(menu)
                     .orElseThrow(() -> new IllegalArgumentException(INPUT_MENU_EXCEPTION_MESSAGE));
-            result.add(OrderedMenu.of(christmasMenu, menus.get(menu)));
+            result.add(OrderedMenuItem.of(christmasMenu, menus.get(menu)));
         }
 
         return result;
@@ -104,7 +104,7 @@ public class MockEventPlanner {
         validateOrderAmount(menus);
     }
 
-    private void validateOnlyDrinkOrdered(List<OrderedMenu> result) {
+    private void validateOnlyDrinkOrdered(List<OrderedMenuItem> result) {
         long nonDrinkCount = result.stream()
                 .filter(e -> !e.isOfType(Drink.class))
                 .count();

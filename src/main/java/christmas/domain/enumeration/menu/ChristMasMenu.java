@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public enum ChristMasMenu {
 
@@ -34,10 +35,8 @@ public enum ChristMasMenu {
     private static final Map<List<? extends Menu>, ChristMasMenu> CHRISTMAS_MENU_BY_CATEGORY;
 
     static {
-        CHRISTMAS_MENU_BY_CATEGORY = new HashMap<>();
-        for (ChristMasMenu category : ChristMasMenu.values()) {
-            CHRISTMAS_MENU_BY_CATEGORY.put(category.items, category);
-        }
+        CHRISTMAS_MENU_BY_CATEGORY = Arrays.stream(ChristMasMenu.values())
+                .collect(Collectors.toMap(category -> category.items, category -> category));
     }
 
     private final List<? extends Menu> items;

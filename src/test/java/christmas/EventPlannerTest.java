@@ -19,17 +19,14 @@ class EventPlannerTest {
     @DisplayName("정상적인 주문이 들어온 경우")
     @Test
     void takeOrders_ValidInput_ReturnsOrder() {
-        // Arrange
         InputView inputView = Mockito.mock(InputView.class);
         when(inputView.getVisitDate(Mockito.anyInt())).thenReturn("15");
         when(inputView.getOrderingMenus()).thenReturn("티본스테이크-1,바비큐립-1,초코케이크-2,제로콜라-1");
 
         EventPlanner eventPlanner = new EventPlanner(inputView);
 
-        // Act
         Order order = eventPlanner.takeOrders();
 
-        // Assert
         assertNotNull(order);
         assertEquals("12월15일", order.getVisitDate());
         assertAll(
@@ -45,29 +42,23 @@ class EventPlannerTest {
     @DisplayName("음료만으로 구성된 메뉴 주문시 예외 처리")
     @Test
     void takeOrders_Drinks_Only() {
-        // Arrange
         InputView inputView = new MockInvalidMenuInput();
         MockEventPlanner eventPlanner = new MockEventPlanner(inputView);
 
-        // Act
-        String s = eventPlanner.takeWrongOrders();
+        String errorMessage = eventPlanner.takeWrongOrders();
 
-        // Assert
-        assertThat(s).contains("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+        assertThat(errorMessage).contains("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
     }
 
     @DisplayName("잘못된 날짜")
     @Test
     void takeOrders_Wrong_Date() {
-        // Arrange
         InputView inputView = new MockInvalidMenuInput();
         MockEventPlanner eventPlanner = new MockEventPlanner(inputView);
 
-        // Act
-        String s = eventPlanner.takeWrongDate();
+        String errorMessage = eventPlanner.takeWrongDate();
 
-        // Assert
-        assertThat(s).contains("[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.");
+        assertThat(errorMessage).contains("[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.");
     }
 
 }
